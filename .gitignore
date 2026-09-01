@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+
+# Local databases and environment files
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+
+# Frontend dependencies and generated output
+node_modules/
+frontend/dist/
+
+# Editors and operating systems
+.idea/
+.DS_Store
+*.swp
+
