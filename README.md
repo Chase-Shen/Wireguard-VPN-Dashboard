@@ -1,9 +1,9 @@
-# WireGuard Dashboard
+# WireGuard VPN Dashboard
 
-A self-hosted web dashboard for monitoring a WireGuard VPN server, its peers, and the health of the Ubuntu host running it.
+A self-hosted web dashboard for monitoring a WireGuard VPN server, its peers, and the status of the Ubuntu host running it.
 
 > [!NOTE]
-> This project is under active development. The monitoring interface works, while authentication, device provisioning, and safe privileged WireGuard management are still being built. It is not ready for an unprotected public deployment.
+> This project is under active development. The monitoring interface works, while authentication, device provisioning, and safe privileged WireGuard management are still being built. 
 
 ## What it does
 
@@ -21,11 +21,10 @@ A self-hosted web dashboard for monitoring a WireGuard VPN server, its peers, an
 | Server health dashboard | Working prototype |
 | WireGuard peer monitoring | Working prototype |
 | HTTPS deployment through Caddy | Documented and tested |
-| Database schema | Initial migration drafted |
+| Database schema | Initial migration |
 | Application authentication | Planned |
 | Device creation and revocation | Planned |
 | Restricted privilege helper | Planned |
-| Automated tests | Planned |
 
 ## Architecture
 
