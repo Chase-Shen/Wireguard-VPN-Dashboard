@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard">
-        <h1>VPN Server Dashboard</h1>
+        <h1>Wireguard VPN Dashboard</h1>
         <!-- Header section-->
         <nav class="nav">
             <button @click="currentTab = 'systemInfo'">Server Info</button>
@@ -60,7 +60,8 @@ const currentTab = ref('systemInfo')
 const peers = ref([])
 const systemInfo = ref(null)
 
-const API_URL = 'http://localhost:8000'
+// const API_URL = 'http://localhost:8000'
+const API_URL = '/api'
 
 let systemInfoInterval = null
 let peersInterval = null
