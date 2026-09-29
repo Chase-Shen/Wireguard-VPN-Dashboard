@@ -1,10 +1,43 @@
-from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import subprocess
-import psutil
-from datetime import datetime
+import sqlite3
+from pydantic import BaseModel, Field
+
+from fastapi import (
+    Cookie,
+    Depends,
+    FastAPI,
+    HTTPException,
+    Response,
+    status,
+)
+
+from backend.auth import (
+    authenticate_user,
+    create_session,
+    delete_expired_sessions,
+    delete_session,
+    get_user_from_session,
+)
+
+from backend.database import get_db
+from backend.routers import system
 
 app = FastAPI(title="WireGuard Dashboard")
+
+app.include_router(system.router)
+
+Database = Annotated[
+    sqlite3.Connection,
+    Depends(get_db),
+]
+
+SESSION_COOKIE = "wg_session"
+SESSION_SECONDS = 12 * 60 * 60
+
+class LoginRequest(BaseModel):
+    username: str = Field(..., example="admin")
+    password: str = Field(..., example="password")
 
 # Add CORS middleware to allow frontend to call API
 app.add_middleware(
@@ -15,26 +48,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/system/info")
-def system_info():
-    return {
-        "uptime": datetime.now().timestamp() - psutil.boot_time(),
-        "cpu_usage": psutil.cpu_percent(interval=1),
-        "memory": {
-            "total": psutil.virtual_memory().total,
-            "available": psutil.virtual_memory().available,
-            "used": psutil.virtual_memory().used,
-            "percent": psutil.virtual_memory().percent,
-        },
-        "disk": {
-            "total": psutil.disk_usage('/').total,
-            "free": psutil.disk_usage('/').free,
-            "used": psutil.disk_usage('/').used,
-            "percent": psutil.disk_usage('/').percent,
-        },
-        "timestamp": datetime.now().isoformat()        
-    }
     
 @app.get("/wg/peers")
 async def wg_peers():
