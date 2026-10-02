@@ -1,11 +1,10 @@
 import os
 import sqlite3
 from collections.abc import Generator
+from typing import Annotated
+from fastapi import Depends
 
-DATABASE_PATH = os.environ.get(
-    "WG_DASHBOARD_DB_PATH",
-    "/var/lib/wg-dashboard/wg_dashboard.db",
-)
+from backend.config import DATABASE_PATH
 
 def connect_db() -> sqlite3.Connection:
     conn = sqlite3.connect(DATABASE_PATH)
@@ -23,3 +22,5 @@ def get_db() -> Generator[sqlite3.Connection, None, None]:
         yield conn
     finally:
         conn.close()    
+
+Database = Annotated[sqlite3.Connection, Depends(get_db)]

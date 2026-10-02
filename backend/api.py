@@ -1,49 +1,20 @@
 from fastapi.middleware.cors import CORSMiddleware
 import subprocess
-import sqlite3
-from pydantic import BaseModel, Field
+from fastapi import FastAPI
 
-from fastapi import (
-    Cookie,
-    Depends,
-    FastAPI,
-    HTTPException,
-    Response,
-    status,
-)
-
-from backend.auth import (
-    authenticate_user,
-    create_session,
-    delete_expired_sessions,
-    delete_session,
-    get_user_from_session,
-)
-
-from backend.database import get_db
-from backend.routers import system
+from backend.routers import system, auth
+from backend.config import LOCAL_ORIGINS
 
 app = FastAPI(title="WireGuard Dashboard")
 
 app.include_router(system.router)
+app.include_router(auth.router)
 
-Database = Annotated[
-    sqlite3.Connection,
-    Depends(get_db),
-]
-
-SESSION_COOKIE = "wg_session"
-SESSION_SECONDS = 12 * 60 * 60
-
-class LoginRequest(BaseModel):
-    username: str = Field(..., example="admin")
-    password: str = Field(..., example="password")
 
 # Add CORS middleware to allow frontend to call API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173",
-                   "http://localhost:5174"],  # Vite dev server
+    allow_origins=LOCAL_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

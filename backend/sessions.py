@@ -2,29 +2,8 @@ import hashlib
 import secrets
 import sqlite3
 from datetime import datetime, timedelta, timezone
-from pwdlib import PasswordHash
 
-password_hasher = PasswordHash().recommended()
-
-SESSION_HOURS = 12 
-
-def authenticate_user(conn: sqlite3.Connection, username: str, password: str):
-    user = conn.execute(
-        """
-        SELECT id, username, password_hash, role, is_active
-        FROM users
-        WHERE username = ?
-        """,
-        (username,),
-    ).fetchone()
-
-    if user is None or not user["is_active"]:
-        return None
-    
-    if not password_hasher.verify(password, user["password_hash"]):
-        return None
-    
-    return user
+from backend.config import SESSION_HOURS
 
 def hash_session_token(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
@@ -35,7 +14,7 @@ def create_session(conn: sqlite3.Connection, user_id: int) -> str:
 
     expires_at = (
         datetime.now(timezone.utc) + timedelta(hours=SESSION_HOURS)
-        ).strftime("%m-%d-%Y %H:%M:%S")
+        ).strftime("%Y-%m-%d %H:%M:%S")
 
     with conn:
         conn.execute(
